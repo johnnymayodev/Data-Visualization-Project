@@ -14,7 +14,7 @@ const PieChart = ({ data }) => {
 
     const activeCounts = data.reduce(
       (acc, d) => {
-        const isActive = d.Active.trim().toUpperCase() === "TRUE"; 
+        const isActive = d.Active.trim().toUpperCase() === "TRUE";
         acc[isActive ? "Active" : "Non-Active"] += 1;
         return acc;
       },
@@ -32,7 +32,7 @@ const PieChart = ({ data }) => {
 
     const svg = d3
       .select(svgRef.current)
-      .attr("width", width + 150) 
+      .attr("width", width + 150)
       .attr("height", height)
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
@@ -56,9 +56,7 @@ const PieChart = ({ data }) => {
       .style("font-size", "14px")
       .text((d) => `${d.data.value}`);
 
-    const legend = svg
-      .append("g")
-      .attr("transform", `translate(${radius + 40}, ${-radius + 20})`);
+    const legend = svg.append("g").attr("transform", `translate(${radius + 40}, ${-radius + 20})`);
 
     legend
       .selectAll("rect")
@@ -79,7 +77,7 @@ const PieChart = ({ data }) => {
       .attr("x", 20)
       .attr("y", (d, i) => i * 20 + 12)
       .style("font-size", "14px")
-      .style("text-anchor", "start") 
+      .style("text-anchor", "start")
       .text((d) => `${d.label}: ${d.value}`);
   }, [data]);
 

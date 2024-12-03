@@ -38,10 +38,7 @@ const ScatterPlot = ({ data }) => {
       .range([height, 0]);
 
     // Add axes
-    svg
-      .append("g")
-      .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(xScale));
+    svg.append("g").attr("transform", `translate(0, ${height})`).call(d3.axisBottom(xScale));
 
     svg.append("g").call(d3.axisLeft(yScale));
 
@@ -74,18 +71,13 @@ const ScatterPlot = ({ data }) => {
       .attr("stroke", "black");
 
     // Add tooltips
-    const tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("class", "tooltip");
+    const tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
     svg
       .selectAll("circle")
       .on("mouseover", (event, d) => {
         tooltip
-          .html(
-            `<strong>Driver:</strong> ${d.driver}<br/><strong>Entries:</strong> ${d.entries}<br/><strong>Wins:</strong> ${d.wins}`
-          )
+          .html(`<strong>Driver:</strong> ${d.driver}<br/><strong>Entries:</strong> ${d.entries}<br/><strong>Wins:</strong> ${d.wins}`)
           .style("left", `${event.pageX + 10}px`)
           .style("top", `${event.pageY - 20}px`)
           .style("opacity", 1);

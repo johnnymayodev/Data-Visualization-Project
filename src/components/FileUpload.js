@@ -5,7 +5,7 @@ class FileUpload extends Component {
     super(props);
     this.state = {
       file: null,
-      jsonData: null, 
+      jsonData: null,
     };
   }
 
@@ -20,7 +20,7 @@ class FileUpload extends Component {
         const json = this.csvToJson(text);
         this.setState({ jsonData: json });
         if (this.props.set_data) {
-          this.props.set_data(json); 
+          this.props.set_data(json);
         }
       };
       reader.readAsText(file);
@@ -29,19 +29,19 @@ class FileUpload extends Component {
 
   csvToJson = (csv) => {
     const lines = csv.trim().split("\n");
-    const headers = lines[0].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g); 
+    const headers = lines[0].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
 
     const result = [];
 
     for (let i = 1; i < lines.length; i++) {
-      const currentLine = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g); 
+      const currentLine = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
       const obj = {};
 
       headers.forEach((header, index) => {
         let value = currentLine[index]?.trim();
 
         if (value) {
-          value = value.replace(/^"|"$/g, ""); 
+          value = value.replace(/^"|"$/g, "");
         }
 
         obj[header.trim()] = value;
@@ -60,11 +60,7 @@ class FileUpload extends Component {
       <div style={{ backgroundColor: "#f0f0f0", padding: 20 }}>
         <h2>Upload a CSV File</h2>
         <form onSubmit={this.handleFileSubmit}>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={(event) => this.setState({ file: event.target.files[0] })}
-          />
+          <input type="file" accept=".csv" onChange={(event) => this.setState({ file: event.target.files[0] })} />
           <button type="submit">Upload</button>
         </form>
       </div>
