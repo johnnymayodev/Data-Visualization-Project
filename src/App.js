@@ -11,10 +11,10 @@ function App() {
     <div className="App">
       <FileUpload set_data={setData} />
       {data.length > 0 && (
-        <>
+        <div className="charts">
           <ScatterPlot data={data} />
           <PieChart data={data} />
-        </>
+        </div>
       )}
     </div>
   );
