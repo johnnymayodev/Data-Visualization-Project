@@ -8,9 +8,10 @@ const PieChart = ({ data }) => {
   useEffect(() => {
     if (!data || data.length === 0) return;
 
-    const width = 500;
-    const height = 400;
-    const radius = Math.min(width, height) / 2;
+    // Set smaller width, height, and radius
+    const width = 300; // Reduced width
+    const height = 250; // Reduced height
+    const radius = Math.min(width, height) / 2; // Adjusted radius based on smaller width/height
 
     const activeCounts = data.reduce(
       (acc, d) => {
@@ -56,7 +57,7 @@ const PieChart = ({ data }) => {
       .style("font-size", "14px")
       .text((d) => `${d.data.value}`);
 
-    const legend = svg.append("g").attr("transform", `translate(${radius + 40}, ${-radius + 20})`);
+    const legend = svg.append("g").attr("transform", `translate(${radius + 20}, ${-radius + 10})`);
 
     legend
       .selectAll("rect")

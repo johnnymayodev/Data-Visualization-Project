@@ -19,11 +19,14 @@ const BarChart2 = ({ data }) => {
       AvgFastestLaps: value || 0,
     }));
 
+    // Filter out nationalities with AvgFastestLaps = 0
+    const filtered = formattedData.filter((d) => d.AvgFastestLaps > 0);
+
     if (selectedNationality === "All") {
-      setFilteredData(formattedData);
+      setFilteredData(filtered);
     } else {
       setFilteredData(
-        formattedData.filter((d) => d.Nationality === selectedNationality)
+        filtered.filter((d) => d.Nationality === selectedNationality)
       );
     }
   }, [data, selectedNationality]);

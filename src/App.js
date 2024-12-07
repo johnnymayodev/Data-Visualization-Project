@@ -13,9 +13,17 @@ function App() {
       <FileUpload set_data={setData} />
       {data.length > 0 && (
         <div className="charts">
-          <ScatterPlot data={data} />
-          <PieChart data={data} />
-          <BarChart2 data={data} />
+          <div className="chart">
+            <ScatterPlot data={data} />
+          </div>
+          <div className="chart-row">
+            <div className="chart">
+              <PieChart data={data} />
+            </div>
+            <div className="chart">
+              <BarChart2 data={data} />
+            </div>
+          </div>
         </div>
       )}
     </div>
