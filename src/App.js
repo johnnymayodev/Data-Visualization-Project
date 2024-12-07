@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import FileUpload from "./components/FileUpload";
 import ScatterPlot from "./components/ScatterPlot";
 import PieChart from "./components/PieChart";
+import BarChart2 from "./components/BarChart2";
 import "./App.css";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <div className="charts">
           <ScatterPlot data={data} />
           <PieChart data={data} />
+          <BarChart2 data={data} />
         </div>
       )}
     </div>
