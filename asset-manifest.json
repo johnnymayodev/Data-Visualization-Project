@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/Data-Visualization-Assignment-Project/static/css/main.3a782207.css",
-    "main.js": "/Data-Visualization-Assignment-Project/static/js/main.ec0b89d2.js",
-    "index.html": "/Data-Visualization-Assignment-Project/index.html",
-    "main.3a782207.css.map": "/Data-Visualization-Assignment-Project/static/css/main.3a782207.css.map",
-    "main.ec0b89d2.js.map": "/Data-Visualization-Assignment-Project/static/js/main.ec0b89d2.js.map"
+    "main.css": "/Data-Visualization-Project/static/css/main.3a782207.css",
+    "main.js": "/Data-Visualization-Project/static/js/main.ec0b89d2.js",
+    "index.html": "/Data-Visualization-Project/index.html",
+    "main.3a782207.css.map": "/Data-Visualization-Project/static/css/main.3a782207.css.map",
+    "main.ec0b89d2.js.map": "/Data-Visualization-Project/static/js/main.ec0b89d2.js.map"
   },
   "entrypoints": [
     "static/css/main.3a782207.css",
