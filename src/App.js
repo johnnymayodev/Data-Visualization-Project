@@ -10,19 +10,26 @@ function App() {
 
   return (
     <div className="App">
-      <FileUpload set_data={setData} />
+      <div className="file-upload-container">
+        <FileUpload set_data={setData} />
+      </div>
       {data.length > 0 && (
-        <div className="charts">
-          <div className="chart">
+        <div className="charts-container">
+          {/* Top row: Two bar charts */}
+          <div className="chart chart1">
+            <h3>Bar Chart 1</h3>
+            <p>Placeholder for Bar Chart 1</p>
+          </div>
+          <div className="chart chart2">
+            <BarChart2 data={data} />
+          </div>
+
+          {/* Bottom row: Scatter Plot and Pie Chart */}
+          <div className="chart chart3">
             <ScatterPlot data={data} />
           </div>
-          <div className="chart-row">
-            <div className="chart">
-              <PieChart data={data} />
-            </div>
-            <div className="chart">
-              <BarChart2 data={data} />
-            </div>
+          <div className="chart chart4">
+            <PieChart data={data} />
           </div>
         </div>
       )}
