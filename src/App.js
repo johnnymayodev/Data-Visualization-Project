@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import FileUpload from "./components/FileUpload";
+import BarChart1 from "./components/BarChart1";
 import ScatterPlot from "./components/ScatterPlot";
 import PieChart from "./components/PieChart";
 import BarChart2 from "./components/BarChart2";
@@ -17,8 +18,7 @@ function App() {
         <div className="charts-container">
           {/* Top row: Two bar charts */}
           <div className="chart chart1">
-            <h3>Bar Chart 1</h3>
-            <p>Placeholder for Bar Chart 1</p>
+            <BarChart1 data={data} />
           </div>
           <div className="chart chart2">
             <BarChart2 data={data} />
