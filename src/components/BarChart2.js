@@ -67,8 +67,25 @@ const BarChart2 = ({ data }) => {
       .style("text-anchor", "start")
       .style("font-size", "10px");
 
+    // X-Axis Label
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", height + 60)
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .text("Nationality");
+
     // Y-Axis
     svg.append("g").call(d3.axisLeft(yScale));
+
+    // Y-Axis Label
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("y", -50)
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .text("Lap Time");
 
     // Bars
     svg.selectAll(".bar")
@@ -96,13 +113,13 @@ const BarChart2 = ({ data }) => {
     <div className="barchart-container" ref={chartRef}>
       {/* Dropdown for selecting nationality */}
       <div className="select-wrapper">
-        <label htmlFor="nationality-select">Filter by Nationality:</label>
+        <label htmlFor="nationality-select"></label>
         <select
           id="nationality-select"
           value={selectedNationality}
           onChange={(e) => setSelectedNationality(e.target.value)}
         >
-          <option value="All">All</option>
+          <option value="All">Nationality</option>
           {Array.from(new Set(data.map((d) => d.Nationality)))
             .filter((n) => n)
             .sort()
