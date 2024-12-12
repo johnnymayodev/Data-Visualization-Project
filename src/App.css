@@ -43,15 +43,7 @@
   gap: 10px;
 }
 
-.slider-container input[type="range"] {
-  -webkit-appearance: none;
-  width: 80%;
-  height: 5px;
-  background: #ddd;
-  border-radius: 5px;
-  outline: none;
-  cursor: pointer;
-}
+
 
 .slider-container input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
