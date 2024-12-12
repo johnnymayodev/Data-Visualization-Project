@@ -97,6 +97,7 @@ const BarChart1 = ({ data }) => {
   <title>{entry.driver}</title> {/* Full driver name as a tooltip */}
 </rect>
 
+
               {/* Driver Label */}
               <text
   x="25" // Adjust as per your alignment
@@ -122,7 +123,7 @@ const BarChart1 = ({ data }) => {
           <line x1="40" y1="300" x2={chartData.length * 70 + 40} y2="300" stroke="black" />
           {/* X-axis label */}
           <text
-            x={chartData.length * 35 + 40}
+            x="400"
             y="340"
             textAnchor="middle"
             style={{ fontSize: "12px", fontWeight: "bold" }}
