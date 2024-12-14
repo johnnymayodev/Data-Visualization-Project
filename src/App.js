@@ -6,6 +6,8 @@ import PieChart from "./components/PieChart";
 import BarChart2 from "./components/BarChart2";
 import "./App.css";
 
+// test
+
 function App() {
   const [data, setData] = useState([]);
 
