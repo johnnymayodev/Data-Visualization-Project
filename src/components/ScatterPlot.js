@@ -17,9 +17,15 @@ const ScatterPlot = ({ data }) => {
 
     const parsedData = data.map((d) => ({
       driver: d.Driver,
+      nationality: d.Nationality,
       entries: parseFloat(d.Race_Entries),
       wins: parseFloat(d.Race_Wins),
+      championships: parseInt(d.Championships, 10),
+      pointsPerEntry: parseFloat(d.Points_Per_Entry),
+      podiums: parseInt(d.Podiums, 10),
+      polePositions: parseInt(d.Pole_Positions, 10),
     }));
+
 
     d3.select(svgRef.current).selectAll("*").remove();
 
@@ -64,7 +70,16 @@ const ScatterPlot = ({ data }) => {
       .style("text-anchor", "middle")
       .attr("transform", "rotate(-90)")
       .text("Race Wins");
-
+      const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("background", "#fff")
+      .style("padding", "5px")
+      .style("border", "1px solid #ccc")
+      .style("border-radius", "5px")
+      .style("pointer-events", "none")
+      .style("visibility", "hidden");
     // Add circles
     svg
       .selectAll("circle")
@@ -73,10 +88,33 @@ const ScatterPlot = ({ data }) => {
       .append("circle")
       .attr("cx", (d) => xScale(d.entries))
       .attr("cy", (d) => yScale(d.wins))
-      .attr("r", 5)
+      .attr("r", 6)
       .attr("fill", "steelblue")
       .attr("stroke", "black")
-      .attr("clip-path", "url(#chart-clip)"); // Clip to prevent overflow
+      .attr("clip-path", "url(#chart-clip)")
+      .on("mouseover", (event, d) => {
+        tooltip
+          .style("visibility", "visible")
+          .html(
+            `<strong>Driver:</strong> ${d.driver}<br>` +
+              `<strong>Nationality:</strong> ${d.nationality}<br>` +
+              `<strong>Race Entries:</strong> ${d.entries}<br>` +
+              `<strong>Race Wins:</strong> ${d.wins}<br>` +
+              `<strong>Championships:</strong> ${d.championships}<br>` +
+              `<strong>Points per Entry:</strong> ${d.pointsPerEntry.toFixed(2)}<br>` +
+              `<strong>Podiums:</strong> ${d.podiums}<br>` +
+              `<strong>Pole Positions:</strong> ${d.polePositions}`
+          );
+      })
+      .on("mousemove", (event) => {
+        tooltip
+          .style("top", `${event.pageY + 10}px`)
+          .style("left", `${event.pageX + 10}px`);
+      })
+      .on("mouseout", () => {
+        tooltip.style("visibility", "hidden");
+      });
+      // Clip to prevent overflow
 
     // Add clipping to ensure circles stay within the chart
     svg
