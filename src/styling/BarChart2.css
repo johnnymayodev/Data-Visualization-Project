@@ -4,38 +4,66 @@
   flex-direction: column;
   align-items: center;
   margin: 20px;
+  width: 100%;
+  height: 100%;
+  position: relative; /* Ensure dropdown stays above chart if overlapping occurs */
 }
 
+/* Dropdown container styling */
 .select-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
+  z-index: 10; /* Ensure dropdown is on top of chart */
+  position: relative;
 }
 
-#barchart2 {
-  margin-top: 20px;
-}
-
+/* Dropdown input styling */
 #nationality-select {
-  padding: 5px;
+  margin-left: 10px;
+  padding: 8px 12px;
   font-size: 14px;
-  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 label {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
+  color: #333;
 }
 
+/* Styling for the chart's SVG container */
+#barchart2 {
+  margin-top: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+/* Styling for bars in the chart */
 .bar {
   fill: steelblue;
+  transition: fill 0.2s ease-in-out;
 }
 
+.bar:hover {
+  fill: orange;
+  cursor: pointer;
+}
+
+/* Axis text and lines */
 .axis text {
   font-size: 12px;
+  fill: #333;
 }
 
 .axis path,
 .axis line {
   shape-rendering: crispEdges;
+  stroke: #ccc;
 }
 
 .axis path {
@@ -43,9 +71,28 @@ label {
 }
 
 .axis line {
-  stroke: #ccc;
+  stroke-width: 1;
+  stroke: #ddd;
 }
 
-.bar:hover {
-  opacity: 0.8;
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .barchart-container {
+    padding: 10px;
+  }
+
+  .select-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #nationality-select {
+    margin-left: 0;
+    margin-top: 5px;
+    width: 100%;
+  }
+
+  .axis text {
+    font-size: 10px;
+  }
 }

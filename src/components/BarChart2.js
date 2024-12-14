@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import * as d3 from "d3";
-import "../styling/BarChart2.css"; // Importing the CSS
+import "../styling/BarChart2.css";
 
 const BarChart2 = ({ data }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedNationality, setSelectedNationality] = useState("All");
+  const chartRef = useRef();
 
-  // Aggregate data when data or selectedNationality changes
   useEffect(() => {
     const groupedData = d3.rollup(
       data,
@@ -19,7 +19,6 @@ const BarChart2 = ({ data }) => {
       AvgFastestLaps: value || 0,
     }));
 
-    // Filter out nationalities with AvgFastestLaps = 0
     const filtered = formattedData.filter((d) => d.AvgFastestLaps > 0);
 
     if (selectedNationality === "All") {
@@ -31,18 +30,18 @@ const BarChart2 = ({ data }) => {
     }
   }, [data, selectedNationality]);
 
-  // Memoize the drawChart function to avoid unnecessary re-renders
   const drawChart = useCallback(() => {
-    const margin = { top: 40, right: 20, bottom: 100, left: 70 }; // Increased left margin for label
-    const width = 800 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
+    const container = chartRef.current.getBoundingClientRect();
+    const margin = { top: 40, right: 20, bottom: 120, left: 70 }; // Adjusted bottom margin for x-axis labels
+    const width = container.width - margin.left - margin.right;
+    const height = container.height - margin.top - margin.bottom;
 
-    d3.select("#barchart2").selectAll("*").remove(); // Clear the chart
+    d3.select("#barchart2").selectAll("*").remove();
 
     const svg = d3
       .select("#barchart2")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", container.width)
+      .attr("height", container.height)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -54,89 +53,84 @@ const BarChart2 = ({ data }) => {
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(filteredData, (d) => d.AvgFastestLaps)])
+      .domain([0, d3.max(filteredData, (d) => d.AvgFastestLaps) || 0])
       .range([height, 0]);
 
-    const barWidth = selectedNationality === "All" ? xScale.bandwidth() : 100;
-
-    const xAxis = svg
-      .append("g")
+    // X-Axis
+    svg.append("g")
       .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(xScale));
-
-    xAxis.selectAll("text")
-      .attr("transform", "rotate(270)") // Rotate text upside down
-      .attr("x", -10) // Adjust x-offset for proper placement
-      .attr("y", -5) // Adjust y-offset to bring text closer to axis
-      .style("text-anchor", "end")
+      .call(d3.axisBottom(xScale))
+      .selectAll("text")
+      .attr("transform", "rotate(45)")
+      .attr("x", 10)
+      .attr("y", 5)
+      .style("text-anchor", "start")
       .style("font-size", "10px");
 
+    // X-Axis Label
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", height + 60)
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .text("Nationality");
+
+    // Y-Axis
     svg.append("g").call(d3.axisLeft(yScale));
 
-    // Adding the 'Lap Time' label outside the y-axis
-    svg
-      .append("text")
-      .attr("transform", "rotate(-90)") // Rotate the text to be vertical
-      .attr("x", -height / 2) // Position it at the center of the y-axis
-      .attr("y", -margin.left + 20) // Add some padding from the left
-      .style("text-anchor", "middle") // Center the text horizontally
+    // Y-Axis Label
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("y", -50)
+      .attr("text-anchor", "middle")
       .style("font-size", "12px")
       .text("Lap Time");
 
-    svg
-      .selectAll(".bar")
+    // Bars
+    svg.selectAll(".bar")
       .data(filteredData)
       .enter()
       .append("rect")
       .attr("class", "bar")
-      .attr("x", (d) => {
-        if (selectedNationality === "All") {
-          return xScale(d.Nationality); // Default behavior for multiple nationalities
-        } else {
-          return (width - barWidth) / 2; // Centered bar for single nationality
-        }
-      })
+      .attr("x", (d) => xScale(d.Nationality))
       .attr("y", (d) => yScale(d.AvgFastestLaps))
-      .attr("width", barWidth)
-      .attr("height", (d) => height - yScale(d.AvgFastestLaps));
-  }, [filteredData, selectedNationality]);
+      .attr("width", xScale.bandwidth())
+      .attr("height", (d) => height - yScale(d.AvgFastestLaps))
+      .on("mouseover", function () {
+        d3.select(this).style("fill", "orange");
+      })
+      .on("mouseout", function () {
+        d3.select(this).style("fill", "steelblue");
+      });
+  }, [filteredData]);
 
-  // Call drawChart when filteredData changes
   useEffect(() => {
     drawChart();
   }, [filteredData, drawChart]);
 
-  // Get the nationalities with avg fast lap time > 0 and sort them alphabetically
-  const availableNationalities = Array.from(
-    new Set(data.map((d) => d.Nationality))
-  )
-    .map((nationality) => {
-      const avgFastestLap = d3.mean(
-        data.filter((d) => d.Nationality === nationality),
-        (d) => +d.Fastest_Laps
-      );
-      return { nationality, avgFastestLap };
-    })
-    .filter((d) => d.avgFastestLap > 0) // Only include nationalities with avg fast lap > 0
-    .sort((a, b) => a.nationality.localeCompare(b.nationality)); // Sort alphabetically
-
   return (
-    <div className="barchart-container">
+    <div className="barchart-container" ref={chartRef}>
+      {/* Dropdown for selecting nationality */}
       <div className="select-wrapper">
-        <label htmlFor="nationality-select">Filter by Nationality:</label>
+        <label htmlFor="nationality-select"></label>
         <select
           id="nationality-select"
           value={selectedNationality}
           onChange={(e) => setSelectedNationality(e.target.value)}
         >
-          <option value="All">All</option>
-          {availableNationalities.map((nat) => (
-            <option key={nat.nationality} value={nat.nationality}>
-              {nat.nationality}
-            </option>
-          ))}
+          <option value="All">Nationality</option>
+          {Array.from(new Set(data.map((d) => d.Nationality)))
+            .filter((n) => n)
+            .sort()
+            .map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
         </select>
       </div>
+      {/* Chart Container */}
       <svg id="barchart2"></svg>
     </div>
   );

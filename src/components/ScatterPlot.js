@@ -8,9 +8,12 @@ const ScatterPlot = ({ data }) => {
   useEffect(() => {
     if (!data || data.length === 0) return;
 
-    const margin = { top: 20, right: 30, bottom: 50, left: 50 };
-    const width = 800 - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
+    const container = svgRef.current.getBoundingClientRect();
+    const margin = { top: 20, right: 30, bottom: 50, left: 70 };
+
+    // Adjust chart width and height
+    const width = container.width - margin.left - margin.right;
+    const height = (container.width * 0.6) - margin.top - margin.bottom; // Proportional height
 
     const parsedData = data.map((d) => ({
       driver: d.Driver,
@@ -22,43 +25,47 @@ const ScatterPlot = ({ data }) => {
 
     const svg = d3
       .select(svgRef.current)
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", container.width)
+      .attr("height", container.width * 0.7) // Increased proportional height
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    // Adjust x and y scales
     const xScale = d3
       .scaleLinear()
-      .domain([0, d3.max(parsedData, (d) => d.entries) + 5])
+      .domain([0, d3.max(parsedData, (d) => d.entries) + 10]) // Add padding to x-axis
       .range([0, width]);
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(parsedData, (d) => d.wins) + 5])
+      .domain([0, d3.max(parsedData, (d) => d.wins) + 10]) // Add padding to y-axis
       .range([height, 0]);
 
-    // Add axes
-    svg.append("g").attr("transform", `translate(0, ${height})`).call(d3.axisBottom(xScale));
+    // Add x-axis
+    svg.append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(xScale));
 
+    // Add y-axis
     svg.append("g").call(d3.axisLeft(yScale));
 
-    // Add labels for axes
+    // Add axis labels
     svg
       .append("text")
       .attr("x", width / 2)
-      .attr("y", height + margin.bottom - 10)
+      .attr("y", height + margin.bottom - 15)
       .style("text-anchor", "middle")
       .text("Race Entries");
 
     svg
       .append("text")
       .attr("x", -height / 2)
-      .attr("y", -margin.left + 15)
+      .attr("y", -margin.left + 20)
       .style("text-anchor", "middle")
       .attr("transform", "rotate(-90)")
       .text("Race Wins");
 
-    // Add points
+    // Add circles
     svg
       .selectAll("circle")
       .data(parsedData)
@@ -68,26 +75,21 @@ const ScatterPlot = ({ data }) => {
       .attr("cy", (d) => yScale(d.wins))
       .attr("r", 5)
       .attr("fill", "steelblue")
-      .attr("stroke", "black");
+      .attr("stroke", "black")
+      .attr("clip-path", "url(#chart-clip)"); // Clip to prevent overflow
 
-    // Add tooltips
-    const tooltip = d3.select("body").append("div").attr("class", "tooltip");
-
+    // Add clipping to ensure circles stay within the chart
     svg
-      .selectAll("circle")
-      .on("mouseover", (event, d) => {
-        tooltip
-          .html(`<strong>Driver:</strong> ${d.driver}<br/><strong>Entries:</strong> ${d.entries}<br/><strong>Wins:</strong> ${d.wins}`)
-          .style("left", `${event.pageX + 10}px`)
-          .style("top", `${event.pageY - 20}px`)
-          .style("opacity", 1);
-      })
-      .on("mouseout", () => {
-        tooltip.style("opacity", 0);
-      });
+      .append("clipPath")
+      .attr("id", "chart-clip")
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", width)
+      .attr("height", height);
   }, [data]);
 
-  return <svg ref={svgRef}></svg>;
+  return <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>;
 };
 
 export default ScatterPlot;
