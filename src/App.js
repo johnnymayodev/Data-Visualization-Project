@@ -11,9 +11,14 @@ function App() {
 
   return (
     <div className="App">
-      <div className="file-upload-container">
-        <FileUpload set_data={setData} />
-      </div>
+      {/* Conditional rendering: Show FileUpload if no data */}
+      {!data.length && (
+        <div className="file-upload-container">
+          <FileUpload set_data={setData} />
+        </div>
+      )}
+
+      {/* Show visualizations if data is uploaded */}
       {data.length > 0 && (
         <div className="charts-container">
           {/* Top row: Two bar charts */}
