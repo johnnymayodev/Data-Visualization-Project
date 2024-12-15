@@ -3,15 +3,17 @@ import * as d3 from "d3";
 import "../styling/PieChart.css";
 
 const PieChart = ({ data }) => {
+
   const svgRef = useRef();
 
   useEffect(() => {
+    //checking for empty data 
     if (!data || data.length === 0) return;
 
-    // Set smaller width, height, and radius
-    const width = 300; // Reduced width
-    const height = 250; // Reduced height
-    const radius = Math.min(width, height) / 2; // Adjusted radius based on smaller width/height
+    const width = 300;
+    const height = 250;
+    //calculating radius 
+    const radius = Math.min(width, height) / 2; 
 
     const activeCounts = data.reduce(
       (acc, d) => {
@@ -19,24 +21,29 @@ const PieChart = ({ data }) => {
         acc[isActive ? "Active" : "Non-Active"] += 1;
         return acc;
       },
-      { Active: 0, "Non-Active": 0 }
+      { Active: 0, "Non-Active": 0 } 
     );
 
+    //preparing data for slicing pie chart
     const pieData = Object.entries(activeCounts).map(([key, value]) => ({
       label: key,
       value,
     }));
 
+    //color scale
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
+    //clearing before redrawing
     d3.select(svgRef.current).selectAll("*").remove();
 
+    //clearing and setting attributes
     const svg = d3
       .select(svgRef.current)
-      .attr("width", width + 150)
+      .attr("width", width + 150) 
       .attr("height", height)
       .append("g")
-      .attr("transform", `translate(${width / 2}, ${height / 2})`);
+      // centering the chart
+      .attr("transform", `translate(${width / 2}, ${height / 2})`); 
 
     const pie = d3.pie().value((d) => d.value);
     const arc = d3.arc().innerRadius(0).outerRadius(radius);
@@ -45,20 +52,23 @@ const PieChart = ({ data }) => {
 
     arcs
       .append("path")
-      .attr("d", arc)
-      .attr("fill", (d) => colorScale(d.data.label))
+      .attr("d", arc) 
+      //slice color
+      .attr("fill", (d) => colorScale(d.data.label)) 
       .attr("stroke", "black")
       .attr("stroke-width", 1);
 
+    //lables for each pie
     arcs
       .append("text")
       .attr("transform", (d) => `translate(${arc.centroid(d)})`)
       .attr("text-anchor", "middle")
       .style("font-size", "14px")
-      .text((d) => `${d.data.value}`);
+      .text((d) => `${d.data.value}`); 
 
+    //container for legend 
     const legend = svg.append("g").attr("transform", `translate(${radius + 20}, ${-radius + 10})`);
-
+    //legend rectangles
     legend
       .selectAll("rect")
       .data(pieData)
@@ -70,17 +80,19 @@ const PieChart = ({ data }) => {
       .attr("height", 15)
       .attr("fill", (d) => colorScale(d.label));
 
+    //adding legend text
     legend
       .selectAll("text")
       .data(pieData)
       .enter()
       .append("text")
       .attr("x", 20)
-      .attr("y", (d, i) => i * 20 + 12)
+      .attr("y", (d, i) => i * 20 + 12) 
       .style("font-size", "14px")
       .style("text-anchor", "start")
-      .text((d) => `${d.label}: ${d.value}`);
-  }, [data]);
+      //displaying label and value
+      .text((d) => `${d.label}: ${d.value}`); 
+  }, [data]); 
 
   return <svg ref={svgRef}></svg>;
 };

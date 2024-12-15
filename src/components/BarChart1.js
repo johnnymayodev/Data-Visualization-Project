@@ -4,50 +4,60 @@ import "../styling/BarChart1.css";
 const BarChart1 = ({ data }) => {
   const [chartData, setChartData] = useState([]);
   const [maxValue, setMaxValue] = useState(0);
-  const [yearRange, setYearRange] = useState([1950, 2023]); // Default year range
+  const [yearRange, setYearRange] = useState([1950, 2023]);
 
   const handleYearChange = (e) => {
     const { name, value } = e.target;
-    setYearRange((prev) =>
-      name === "min" ? [parseInt(value), prev[1]] : [prev[0], parseInt(value)]
-    );
+    setYearRange((prevRange) => {
+      if (name === "min") {
+        return [parseInt(value, 10), prevRange[1]];
+      } else {
+        return [prevRange[0], parseInt(value, 10)];
+      }
+    });
   };
-  const abbreviateName = (name) =>
-    name
-      .split(" ")
-      .map((n, i) => (i === name.split(" ").length - 1 ? n : `${n[0]}.`))
-      .join(" ");
-  
-  useEffect(() => {
-    if (data.length === 0) return;
 
-    // Parse data and filter by year range
+  // making name shorter
+  const abbreviateName = (name) => {
+    const nameParts = name.split(" ");
+    return nameParts
+      .map((part, index) => {
+        if (index === nameParts.length - 1) return part; 
+        return `${part[0]}.`;
+      })
+      .join(" ");
+  };
+
+  useEffect(() => {
+    if (!data || data.length === 0) return;
+
+    // Filter drivers based on active years
     const filteredData = data.filter((driver) => {
-      const activeYears = JSON.parse(driver.Seasons.replace(/'/g, '"')); // Parse seasons as an array
+      const activeYears = JSON.parse(driver.Seasons.replace(/'/g, '"'));
       return activeYears.some((year) => year >= yearRange[0] && year <= yearRange[1]);
     });
 
-    // Aggregate Race_Wins by Driver
-    const aggregatedData = filteredData.reduce((acc, driver) => {
-      if (!acc[driver.Driver]) {
-        acc[driver.Driver] = 0;
+    // Aggregate race wins for each driver
+    const winsByDriver = {};
+    filteredData.forEach((driver) => {
+      if (!winsByDriver[driver.Driver]) {
+        winsByDriver[driver.Driver] = 0;
       }
-      acc[driver.Driver] += driver.Race_Wins;
-      return acc;
-    }, {});
+      winsByDriver[driver.Driver] += driver.Race_Wins;
+    });
 
-    // Transform into array for sorting and rendering
-    const chartDataArray = Object.entries(aggregatedData)
+    //putting data into an array 
+    const chartDataArray = Object.entries(winsByDriver)
       .map(([driver, wins]) => ({ driver, wins }))
-      .sort((a, b) => b.wins - a.wins); // Sort by wins descending
+      .sort((a, b) => b.wins - a.wins);
 
     setChartData(chartDataArray);
-    setMaxValue(Math.max(...chartDataArray.map((entry) => entry.wins), 0));
+    const max = chartDataArray.length > 0 ? Math.max(...chartDataArray.map((entry) => entry.wins)) : 0;
+    setMaxValue(max);
   }, [data, yearRange]);
 
   return (
     <div className="bar-chart-1">
-      {/* Scroll Bar */}
       <div className="scroll-container">
         <label>
           Year Range: {yearRange[0]} - {yearRange[1]}
@@ -70,10 +80,10 @@ const BarChart1 = ({ data }) => {
         />
       </div>
 
-      {/* Horizontal Scroller */}
+      {/* chart visualization */}
       <div className="chart-scroller">
         <svg width={chartData.length * 70 + 50} height="350">
-          {/* Y-axis label */}
+          {/*y axis label*/}
           <text
             transform="rotate(-90)"
             x="-175"
@@ -86,44 +96,44 @@ const BarChart1 = ({ data }) => {
 
           {chartData.map((entry, index) => (
             <g key={entry.driver} transform={`translate(${index * 70 + 50}, 0)`}>
-              {/* Bar */}
               <rect
-  x="0"
-  y={300 - (entry.wins / maxValue) * 250} // Adjust based on your scaling
-  width="50"
-  height={(entry.wins / maxValue) * 250}
-  fill="teal"
->
-  <title>{entry.driver}</title> {/* Full driver name as a tooltip */}
-</rect>
+                x="0"
+                y={300 - (entry.wins / maxValue) * 250}
+                height={(entry.wins / maxValue) * 250}
+                width="50"
+                fill="teal"
+              >
+                <title>{entry.driver}</title> {/*tooltip*/}
+              </rect>
 
-
-              {/* Driver Label */}
+              {/*driver lable*/}
               <text
-  x="25" // Adjust as per your alignment
-  y="320" // Adjust as per your positioning
-  textAnchor="middle"
-  style={{ fontSize: "10px" }}
->
-  {abbreviateName(entry.driver)}
-</text>
+                x="25"
+                y="320"
+                textAnchor="middle"
+                style={{ fontSize: "10px" }}
+              >
+                {abbreviateName(entry.driver)}
+              </text>
 
-              {/* Wins Label */}
+              {/*wins label*/}
               <text
                 x="25"
                 y={300 - (entry.wins / maxValue) * 250 - 5}
                 textAnchor="middle"
                 style={{ fontSize: "10px", fontWeight: "bold" }}
               >
-                {entry.wins.toString().padStart(3, "0")}
+                {String(entry.wins).padStart(3, "0")}
               </text>
             </g>
           ))}
-          {/* Axis Line */}
+
+          {/* x axis line*/}
           <line x1="40" y1="300" x2={chartData.length * 70 + 40} y2="300" stroke="black" />
-          {/* X-axis label */}
+
+          {/* x axis label */}
           <text
-            x="400"
+            x={chartData.length * 35 + 50}
             y="340"
             textAnchor="middle"
             style={{ fontSize: "12px", fontWeight: "bold" }}
