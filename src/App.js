@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import FileUpload from "./components/FileUpload";
 import BarChart1 from "./components/BarChart1";
+import BarChart2 from "./components/BarChart2";
+
 import ScatterPlot from "./components/ScatterPlot";
 import PieChart from "./components/PieChart";
-import BarChart2 from "./components/BarChart2";
 import "./App.css";
-
-// test
 
 function App() {
   const [data, setData] = useState([]);
@@ -18,7 +17,9 @@ function App() {
       </div>
       {data.length > 0 && (
         <div className="charts-container">
-          {/* Top row: Two bar charts */}
+         
+          {/* top graphs */}
+          
           <div className="chart chart1">
             <BarChart1 data={data} />
           </div>
@@ -26,13 +27,17 @@ function App() {
             <BarChart2 data={data} />
           </div>
 
-          {/* Bottom row: Scatter Plot and Pie Chart */}
+
+          {/* bottom graphs */}
+          
           <div className="chart chart3">
             <ScatterPlot data={data} />
           </div>
           <div className="chart chart4">
             <PieChart data={data} />
           </div>
+
+
         </div>
       )}
     </div>

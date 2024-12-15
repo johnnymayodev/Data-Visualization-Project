@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import "../styling/ScatterPlot.css"; // Import the CSS file
+import "../styling/ScatterPlot.css"; 
 
 const ScatterPlot = ({ data }) => {
   const svgRef = useRef();
@@ -11,9 +11,9 @@ const ScatterPlot = ({ data }) => {
     const container = svgRef.current.getBoundingClientRect();
     const margin = { top: 20, right: 30, bottom: 50, left: 70 };
 
-    // Adjust chart width and height
+    //chart width and height
     const width = container.width - margin.left - margin.right;
-    const height = (container.width * 0.6) - margin.top - margin.bottom; // Proportional height
+    const height = (container.width * 0.6) - margin.top - margin.bottom;
 
     const parsedData = data.map((d) => ({
       driver: d.Driver,
@@ -26,30 +26,29 @@ const ScatterPlot = ({ data }) => {
     const svg = d3
       .select(svgRef.current)
       .attr("width", container.width)
-      .attr("height", container.width * 0.7) // Increased proportional height
+      .attr("height", container.width * 0.7) 
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Adjust x and y scales
     const xScale = d3
       .scaleLinear()
-      .domain([0, d3.max(parsedData, (d) => d.entries) + 10]) // Add padding to x-axis
+      .domain([0, d3.max(parsedData, (d) => d.entries) + 10])
       .range([0, width]);
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(parsedData, (d) => d.wins) + 10]) // Add padding to y-axis
+      .domain([0, d3.max(parsedData, (d) => d.wins) + 10])
       .range([height, 0]);
 
-    // Add x-axis
+    //x axis
     svg.append("g")
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(xScale));
 
-    // Add y-axis
+    //y axis
     svg.append("g").call(d3.axisLeft(yScale));
 
-    // Add axis labels
+    //axis labels
     svg
       .append("text")
       .attr("x", width / 2)
@@ -65,7 +64,7 @@ const ScatterPlot = ({ data }) => {
       .attr("transform", "rotate(-90)")
       .text("Race Wins");
 
-    // Add circles
+    //adding circles
     svg
       .selectAll("circle")
       .data(parsedData)
@@ -76,9 +75,9 @@ const ScatterPlot = ({ data }) => {
       .attr("r", 5)
       .attr("fill", "steelblue")
       .attr("stroke", "black")
-      .attr("clip-path", "url(#chart-clip)"); // Clip to prevent overflow
+      .attr("clip-path", "url(#chart-clip)");
 
-    // Add clipping to ensure circles stay within the chart
+    
     svg
       .append("clipPath")
       .attr("id", "chart-clip")

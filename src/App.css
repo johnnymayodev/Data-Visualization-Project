@@ -1,4 +1,3 @@
-/* General app container */
 .App {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
@@ -11,7 +10,7 @@
   box-sizing: border-box;
 }
 
-/* File upload section */
+/* file upload */
 .file-upload-container {
   background-color: #ffffff;
   padding: 10px 20px;
@@ -21,7 +20,7 @@
   box-sizing: border-box;
 }
 
-/* Charts container */
+/* bar charts */
 .charts-container {
   display: grid;
   grid-template-areas:
@@ -31,7 +30,7 @@
   grid-template-rows: 50% 50%;
   gap: 20px;
   width: 100%;
-  height: calc(160vh ); /* Account for the file upload section */
+  height: calc(160vh );
   padding: 20px;
   box-sizing: border-box;
 }
@@ -69,7 +68,7 @@
 }
 
 
-/* Chart styles */
+/*chart styles*/
 .chart {
   background-color: #ffffff;
   border: 1px solid #ddd;
@@ -89,7 +88,7 @@
   font-size: 1.2em;
 }
 
-/* Specific chart placement */
+/* charts */
 .chart1 {
   grid-area: chart1;
 }
@@ -106,7 +105,6 @@
   grid-area: chart4;
 }
 
-/* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .charts-container {
     grid-template-areas:
