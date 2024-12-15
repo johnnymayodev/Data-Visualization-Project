@@ -9,7 +9,7 @@ const ScatterPlot = ({ data }) => {
     if (!data || data.length === 0) return;
 
     const container = svgRef.current.getBoundingClientRect();
-    const margin = { top: 10, right: 15, bottom: 40, left: 50 }; // Smaller margins
+    const margin = { top: 20, right: 15, bottom: 40, left: 50 }; // Adjusted top margin for title
 
     // Adjust chart width and height to be smaller
     const width = container.width * 0.5 - margin.left - margin.right; // 50% width of container
@@ -26,7 +26,6 @@ const ScatterPlot = ({ data }) => {
       polePositions: parseInt(d.Pole_Positions, 10),
     }));
 
-
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3
@@ -35,6 +34,16 @@ const ScatterPlot = ({ data }) => {
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Add chart title
+    svg
+      .append("text")
+      .attr("x", width / 2)
+      .attr("y", -10) // Positioned above the chart
+      .attr("text-anchor", "middle")
+      .style("font-size", "14px")
+      .style("font-weight", "bold")
+      .text("Race Entries vs Wins");
 
     // Adjust x and y scales
     const xScale = d3
@@ -72,7 +81,8 @@ const ScatterPlot = ({ data }) => {
       .style("font-size", "10px") // Smaller font size
       .attr("transform", "rotate(-90)")
       .text("Race Wins");
-      const tooltip = d3
+
+    const tooltip = d3
       .select("body")
       .append("div")
       .style("position", "absolute")
@@ -82,6 +92,7 @@ const ScatterPlot = ({ data }) => {
       .style("border-radius", "5px")
       .style("pointer-events", "none")
       .style("visibility", "hidden");
+
     // Add circles
     svg
       .selectAll("circle")
@@ -116,7 +127,6 @@ const ScatterPlot = ({ data }) => {
       .on("mouseout", () => {
         tooltip.style("visibility", "hidden");
       });
-      // Clip to prevent overflow
 
     // Add clipping to ensure circles stay within the chart
     svg

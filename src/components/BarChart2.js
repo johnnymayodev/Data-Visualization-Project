@@ -56,6 +56,15 @@ const BarChart2 = ({ data }) => {
       .domain([0, d3.max(filteredData, (d) => d.AvgFastestLaps) || 0])
       .range([height, 0]);
 
+    // Title of the chart
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", -10)  // Positioned above the chart
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("font-weight", "bold")
+      .text("Fastest Laps by Nationality");
+
     // X-Axis
     svg.append("g")
       .attr("transform", `translate(0,${height})`)

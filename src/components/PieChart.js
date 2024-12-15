@@ -94,7 +94,10 @@ const PieChart = ({ data }) => {
       .text((d) => `${d.label}: ${d.value}`); 
   }, [data]); 
 
-  return <svg ref={svgRef}></svg>;
+  return(<div>
+      <h2>Active vs Non-Active</h2> 
+      <svg ref={svgRef}></svg>
+ </div>);
 };
 
 export default PieChart;

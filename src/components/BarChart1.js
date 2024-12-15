@@ -59,6 +59,7 @@ const BarChart1 = ({ data }) => {
   return (
     <div className="bar-chart-1">
       <div className="scroll-container">
+        <h2>Ranking Drivers by Wins</h2>
         <label>
           Year Range: {yearRange[0]} - {yearRange[1]}
         </label>
@@ -82,8 +83,18 @@ const BarChart1 = ({ data }) => {
 
       {/* chart visualization */}
       <div className="chart-scroller">
-        <svg width={chartData.length * 70 + 50} height="350">
-          {/*y axis label*/}
+        <svg width={chartData.length * 70 + 50} height="400">
+          {/* Chart Title */}
+          <text
+            x="50%"
+            y="30"
+            textAnchor="middle"
+            style={{ fontSize: "16px", fontWeight: "bold" }}
+          >
+            Ranking Drivers by Wins
+          </text>
+
+          {/* y axis label */}
           <text
             transform="rotate(-90)"
             x="-175"
@@ -101,12 +112,12 @@ const BarChart1 = ({ data }) => {
                 y={300 - (entry.wins / maxValue) * 250}
                 height={(entry.wins / maxValue) * 250}
                 width="50"
-                fill="teal"
+                fill="steelblue"
               >
                 <title>{entry.driver}</title> {/*tooltip*/}
               </rect>
 
-              {/*driver lable*/}
+              {/*driver label*/}
               <text
                 x="25"
                 y="320"
@@ -142,6 +153,7 @@ const BarChart1 = ({ data }) => {
           </text>
         </svg>
       </div>
+      <h4>Drivers</h4>
     </div>
   );
 };
