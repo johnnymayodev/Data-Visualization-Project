@@ -32,16 +32,16 @@ const BarChart2 = ({ data }) => {
 
   const drawChart = useCallback(() => {
     const container = chartRef.current.getBoundingClientRect();
-    const margin = { top: 40, right: 20, bottom: 120, left: 70 }; // Adjusted bottom margin for x-axis labels
+    const margin = { top: 30, right: 20, bottom: 80, left: 60 }; // Adjusted bottom margin for x-axis labels
     const width = container.width - margin.left - margin.right;
-    const height = container.height - margin.top - margin.bottom;
+    const height = (container.width * 0.5) - margin.top - margin.bottom; // Smaller proportional height
 
     d3.select("#barchart2").selectAll("*").remove();
 
     const svg = d3
       .select("#barchart2")
       .attr("width", container.width)
-      .attr("height", container.height)
+      .attr("height", container.width * 0.5) // Smaller height
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -62,7 +62,7 @@ const BarChart2 = ({ data }) => {
       .call(d3.axisBottom(xScale))
       .selectAll("text")
       .attr("transform", "rotate(45)")
-      .attr("x", 10)
+      .attr("x", 8)
       .attr("y", 5)
       .style("text-anchor", "start")
       .style("font-size", "10px");
@@ -70,13 +70,15 @@ const BarChart2 = ({ data }) => {
     // X-Axis Label
     svg.append("text")
       .attr("x", width / 2)
-      .attr("y", height + 60)
+      .attr("y", height + 50)
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
       .text("Nationality");
 
     // Y-Axis
-    svg.append("g").call(d3.axisLeft(yScale));
+    svg.append("g").call(
+      d3.axisLeft(yScale).tickSize(0) // Remove tick lines from Y-axis
+    );
 
     // Y-Axis Label
     svg.append("text")
@@ -85,7 +87,7 @@ const BarChart2 = ({ data }) => {
       .attr("y", -50)
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
-      .text("Lap Time");
+      .text("Average Lap Time");
 
     // Bars
     svg.selectAll(".bar")
@@ -97,6 +99,7 @@ const BarChart2 = ({ data }) => {
       .attr("y", (d) => yScale(d.AvgFastestLaps))
       .attr("width", xScale.bandwidth())
       .attr("height", (d) => height - yScale(d.AvgFastestLaps))
+      .attr("fill", "steelblue")
       .on("mouseover", function () {
         d3.select(this).style("fill", "orange");
       })
